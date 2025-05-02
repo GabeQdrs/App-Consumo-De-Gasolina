@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { View, Text, TextInput, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, Image, StyleSheet, Alert } from 'react-native';
+import { calcularConsumo } from './calcularConsumo'; // Importa a função de cálculo
 
+import ponteiro from './assets/ponteiro.png'; // Certifique-se de que o caminho está correto
 
 export default function HomeScreen({ navigation }) {
   const [km, setKm] = useState('');
@@ -9,14 +11,19 @@ export default function HomeScreen({ navigation }) {
   const calcularMedia = () => {
     const kmNumber = parseFloat(km);
     const litrosNumber = parseFloat(litros);
-    const media = kmNumber / litrosNumber;
 
-    navigation.navigate('Resultado', { media });
+    if (isNaN(kmNumber) || isNaN(litrosNumber) || litrosNumber === 0) {
+      Alert.alert("Erro", "Insira valores válidos para KM e Litros (Litros não pode ser 0).");
+      return;
+    }
+
+    const resultado = calcularConsumo(kmNumber, litrosNumber);
+    navigation.navigate('Resultado', { resultado });
   };
 
   return (
     <View style={styles.container}>
-      <Image source={ponteiro} style={styles.image} /> 
+      <Image source={ponteiro} style={styles.image} />
       <Text style={styles.label}>Quilometragem Percorrida (Km):</Text>
       <TextInput
         style={styles.input}
